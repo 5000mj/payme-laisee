@@ -3,7 +3,7 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
 </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PayMe 利是 · 著數優惠</title>
+    <title>PayMe 利是 · 自訂優惠</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -20,7 +20,7 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
             text-align: center;
         }
@@ -62,11 +62,30 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .offer-info {
+            flex: 2;
+            text-align: left;
+            min-width: 200px;
         }
         .price-tag {
             font-weight: bold;
             color: #0098ea;
             font-size: 1.1em;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .offer-url {
+            font-size: 11px;
+            color: #666;
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            word-break: break-all;
+            display: inline-block;
+            max-width: 100%;
         }
         .pay-btn {
             background: #0098ea;
@@ -83,7 +102,89 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
             background: #ccc;
             cursor: wait;
         }
-        .pay-btn.loading-btn::after { content: "..."; }
+        .edit-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .edit-btn:hover { background: #5a6268; }
+        .edit-section {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            text-align: left;
+        }
+        .edit-section h4 {
+            margin-top: 0;
+            color: #856404;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #495057;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-row {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .save-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .save-btn:hover { background: #218838; }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .delete-btn:hover { background: #c82333; }
+        .add-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .add-btn:hover { background: #138496; }
         .note {
             font-size: 12px;
             color: #666;
@@ -108,6 +209,11 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
             font-size: 12px;
             margin-left: 10px;
         }
+        .button-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
     </style>
 <style>
   .imageye-selected {
@@ -117,206 +223,388 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
 </style></head>
 <body>
     <div class="container">
-        <h1>💰 PayMe 利是</h1>
+        <h1>💰 PayMe 利是 · 自訂連結</h1>
         <p class="subtitle">
-            🎁 直接點擊領取 · 自動帶入最新 Token
-            <span class="mock-badge">GitHub Pages 靜態版</span>
+            🎁 你可以任意修改下方的優惠名稱及 PayMe 連結 (自動儲存)
+            <span class="mock-badge">離線編輯 · 永久有效</span>
         </p>
         
         <div id="error-box" class="error-box"></div>
         
         <div id="content-area">
             <div class="user-badge">
-                👤 <span id="user-name">GitHub 訪客</span>
+                👤 <span id="user-name">編輯者</span>
+                <span style="font-size:12px; margin-left:8px;">🔒 資料儲存在你的瀏覽器</span>
             </div>
             
             <div class="cors-warning" id="cors-warning" style="display: none;">
                 ⚠️ 無法連接 HSBC 伺服器 (CORS 阻擋)。<br>
-                <strong>正在使用「示範模式」—— Token 為模擬資料，僅測試開啟連結功能。</strong>
+                <strong>使用「示範模式」—— Token 為模擬資料，但仍可開啟你的自訂連結。</strong>
             </div>
             
-            <h3 style="margin-bottom: 15px; color: #333;">新地商場萬用券</h3>
-            <div id="links-container"><div class="link-card"><span class="price-tag">新地商場萬用券 $3-$3</span><button class="pay-btn" data-base-url="https://payme.hsbc/m/73d8c8a0-e20c-469a-bb57-f836c66eafd4">領取</button></div><div class="link-card"><span class="price-tag">新地商場萬用券 $5-$5</span><button class="pay-btn" data-base-url="https://payme.hsbc/m/3a4af923-cae1-4b28-ab32-8ecb6d00a63f">領取</button></div><div class="link-card"><span class="price-tag">新地商場萬用券 $120-$8</span><button class="pay-btn" data-base-url="https://payme.hsbc/m/35c76840-8a98-4b04-b468-301add0e67dd">領取</button></div><div class="link-card"><span class="price-tag">新地商場萬用券 $168-$10</span><button class="pay-btn" data-base-url="https://payme.hsbc/m/dc6f7a27-90ee-42f2-9425-c65e9b0b54cb">領取</button></div><div class="link-card"><span class="price-tag">新地商場銀聯支付回贈券 $500回$38</span><button class="pay-btn" data-base-url="https://payme.hsbc/m/94498590-b8e4-4721-bb52-954e9028087c">領取</button></div><div class="link-card"><span class="price-tag">新地商場銀聯支付回贈券 $2000回$128</span><button class="pay-btn" data-base-url="https://payme.hsbc/m/7cd803a8-604b-4baa-9bcc-b2706f3d313a">領取</button></div></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0; color: #333;">📋 優惠列表 (點擊領取)</h3>
+                <button id="addNewOfferBtn" class="add-btn">➕ 新增優惠</button>
+            </div>
+            
+            <div id="links-container"></div>
+            
             <div class="note">
-                💡 點擊「領取」後會嘗試獲取最新 Token，如 CORS 失敗則自動使用模擬 Token<br>
-                📱 按鈕會直接開啟 PayMe 連結，分享連結無效
+                💡 每個優惠都可以編輯名稱和 PayMe URL。所有變更會自動存入瀏覽器。<br>
+                📱 按「領取」會嘗試加 token 並開啟連結 (CORS 失敗則用模擬 token)。
             </div>
         </div>
     </div>
 
     <script>
         // --------------------------------------------
-        //  GitHub Pages 靜態版 - 無需 Telegram 驗證
-        //  完全移除 Telegram Widget，直接顯示優惠
+        //  GitHub Pages 靜態版 - 完全可編輯 PayMe 連結
+        //  所有修改儲存在 localStorage，無需後端
         // --------------------------------------------
 
-        // HSBC API Key (仍然保留，但前端 fetch 會因 CORS 失敗)
+        // HSBC API Key (保留，但前端 fetch 會因 CORS 失敗)
         const HSBC_API_KEY = '9104b7e6-ded0-4998-a019-074477573c46';
         const HSBC_API_URL = 'https://paymepromotions.hsbc.com.hk/api/tc/draw/time-token';
         
         // 模擬 Token - 當 CORS 失敗時自動使用
-        const MOCK_TOKEN = 'gh-pages-static-token-' + Date.now();
+        const MOCK_TOKEN = 'gh-pages-edit-token-' + Date.now();
 
-        // 優惠列表資料 (直接內嵌，無需後端)
-        const OFFERS = [
-            { name: '新地商場萬用券 $3-$3', url: 'https://payme.hsbc/m/c90f69cb-04a8-447c-9ea5-9a8849563bd8' },
-            { name: '新地商場萬用券 $5-$5', url: 'https://payme.hsbc/m/258c37c8-4cf7-4a3e-8559-8373eff05043' },
-            { name: '新地商場萬用券 $120-$8', url: 'https://payme.hsbc/m/35c76840-8a98-4b04-b468-301add0e67dd' },
-            { name: '新地商場萬用券 $168-$10', url: 'https://payme.hsbc/m/dc6f7a27-90ee-42f2-9425-c65e9b0b54cb' },
-            { name: '新地商場銀聯支付回贈券 $500回$38', url: 'https://payme.hsbc/m/94498590-b8e4-4721-bb52-954e9028087c' },
-            { name: '新地商場銀聯支付回贈券 $2000回$128', url: 'https://payme.hsbc/m/7cd803a8-604b-4baa-9bcc-b2706f3d313a' }
+        // 儲存鍵名
+        const STORAGE_KEY = 'payme_offers_list';
+
+        // ------------------- 預設優惠 (若 localStorage 為空) -------------------
+        const DEFAULT_OFFERS = [
+            { id: '1', name: '新地商場萬用券 $3-$3', url: 'https://payme.hsbc/m/c90f69cb-04a8-447c-9ea5-9a8849563bd8' },
+            { id: '2', name: '新地商場萬用券 $5-$5', url: 'https://payme.hsbc/m/258c37c8-4cf7-4a3e-8559-8373eff05043' },
+            { id: '3', name: '新地商場萬用券 $120-$8', url: 'https://payme.hsbc/m/35c76840-8a98-4b04-b468-301add0e67dd' },
+            { id: '4', name: '新地商場萬用券 $168-$10', url: 'https://payme.hsbc/m/dc6f7a27-90ee-42f2-9425-c65e9b0b54cb' },
+            { id: '5', name: '新地商場銀聯支付回贈券 $500回$38', url: 'https://payme.hsbc/m/94498590-b8e4-4721-bb52-954e9028087c' },
+            { id: '6', name: '新地商場銀聯支付回贈券 $2000回$128', url: 'https://payme.hsbc/m/7cd803a8-604b-4baa-9bcc-b2706f3d313a' }
         ];
 
-        // 初始化頁面
-        function initPage() {
-            // 設定用戶名稱 (固定)
-            document.getElementById('user-name').textContent = 'GitHub 訪客';
-            
-            // 渲染優惠列表
-            renderOffers();
-            
-            // 檢查 CORS (只是提示用)
-            checkCORS();
+        // ------------------- 讀取/儲存資料 -------------------
+        function loadOffers() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch (e) {
+                    return [...DEFAULT_OFFERS];
+                }
+            }
+            return [...DEFAULT_OFFERS];
         }
 
-        // 渲染優惠卡
+        function saveOffers(offers) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(offers));
+            renderOffers();
+        }
+
+        // ------------------- 渲染優惠卡 (含編輯/刪除按鈕) -------------------
         function renderOffers() {
             const container = document.getElementById('links-container');
-            container.innerHTML = '';
+            if (!container) return;
             
-            OFFERS.forEach(offer => {
+            const offers = loadOffers();
+            container.innerHTML = '';
+
+            if (offers.length === 0) {
+                container.innerHTML = '<div style="padding: 30px; background: #f8f9fa; border-radius: 8px; color: #666;">📭 暫無優惠，點擊「新增優惠」開始</div>';
+                return;
+            }
+
+            offers.forEach(offer => {
                 const card = document.createElement('div');
                 card.className = 'link-card';
+                card.dataset.id = offer.id;
                 
-                const btn = document.createElement('button');
-                btn.className = 'pay-btn';
-                btn.textContent = '領取';
-                btn.dataset.baseUrl = offer.url;
-                btn.onclick = function() { openPayMe(this); };
+                // 左側資訊
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'offer-info';
+                infoDiv.innerHTML = `
+                    <span class="price-tag">${escapeHtml(offer.name)}</span>
+                    <span class="offer-url">${escapeHtml(offer.url)}</span>
+                `;
                 
-                card.innerHTML = `<span class="price-tag">${escapeHtml(offer.name)}</span>`;
-                card.appendChild(btn);
+                // 右側按鈕組
+                const btnGroup = document.createElement('div');
+                btnGroup.className = 'button-group';
+                
+                const payBtn = document.createElement('button');
+                payBtn.className = 'pay-btn';
+                payBtn.textContent = '領取';
+                payBtn.dataset.baseUrl = offer.url;
+                payBtn.onclick = function(e) { 
+                    e.stopPropagation(); 
+                    openPayMe(this); 
+                };
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'edit-btn';
+                editBtn.textContent = '✎ 編輯';
+                editBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    showEditForm(offer.id);
+                };
+                
+                const delBtn = document.createElement('button');
+                delBtn.className = 'delete-btn';
+                delBtn.textContent = '🗑 刪除';
+                delBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    if (confirm(`確定刪除「${offer.name}」？`)) {
+                        deleteOffer(offer.id);
+                    }
+                };
+                
+                btnGroup.appendChild(payBtn);
+                btnGroup.appendChild(editBtn);
+                btnGroup.appendChild(delBtn);
+                
+                card.appendChild(infoDiv);
+                card.appendChild(btnGroup);
                 container.appendChild(card);
             });
         }
 
-        // 嘗試獲取真實 Token，失敗則用 Mock Token
-        async function fetchToken() {
-            // 嘗試呼叫 HSBC API (一定 CORS 失敗，但我們 catch 後用 Mock)
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3000); // 3秒 timeout
-                
-                const response = await fetch(HSBC_API_URL, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Accept-Language': 'zh-HK,zh;q=0.9',
-                        'Apikey': HSBC_API_KEY,
-                        'Cache-Control': 'no-cache',
-                        'Content-Type': 'application/json',
-                        'Referer': 'https://paymepromotions.hsbc.com.hk/tc/game'
-                    },
-                    signal: controller.signal
-                }).catch(error => {
-                    // 必定 CORS error，直接拋出
-                    throw new Error('CORS blocked');
-                });
-
-                clearTimeout(timeoutId);
-                
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
-                let token = await response.text();
-                token = token.trim().replace(/^"|"$/g, '');
-                return { success: true, token, isMock: false };
-                
-            } catch (error) {
-                console.warn('使用模擬 Token (CORS 無法繞過):', error.message);
-                
-                // 顯示 CORS 提示 (但唔阻礙使用)
-                document.getElementById('cors-warning').style.display = 'block';
-                
-                // 返回動態模擬 Token (每次不同，但唔影響 PayMe 連結)
-                return { 
-                    success: true, 
-                    token: MOCK_TOKEN, 
-                    isMock: true 
-                };
-            }
+        // ------------------- 刪除優惠 -------------------
+        function deleteOffer(id) {
+            const offers = loadOffers();
+            const updated = offers.filter(o => o.id !== id);
+            saveOffers(updated);
         }
 
-        // 開啟 PayMe (核心功能)
+        // ------------------- 顯示編輯表單 (動態插入) -------------------
+        function showEditForm(id) {
+            const offers = loadOffers();
+            const offer = offers.find(o => o.id === id);
+            if (!offer) return;
+
+            // 暫時移除原有的編輯表單 (如果有的話)
+            const existingForm = document.getElementById('edit-form-container');
+            if (existingForm) existingForm.remove();
+
+            // 建立編輯區塊
+            const container = document.getElementById('links-container');
+            const editDiv = document.createElement('div');
+            editDiv.id = 'edit-form-container';
+            editDiv.className = 'edit-section';
+            editDiv.style.marginTop = '20px';
+            
+            editDiv.innerHTML = `
+                <h4>✏️ 正在編輯優惠</h4>
+                <div class="form-group">
+                    <label>優惠名稱</label>
+                    <input type="text" id="edit-name" value="${escapeHtml(offer.name)}" placeholder="例如: 商場現金券 $50">
+                </div>
+                <div class="form-group">
+                    <label>PayMe 連結</label>
+                    <input type="url" id="edit-url" value="${escapeHtml(offer.url)}" placeholder="https://payme.hsbc/m/...">
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button id="cancel-edit-btn" class="edit-btn" style="background: #6c757d;">取消</button>
+                    <button id="save-edit-btn" class="save-btn">儲存修改</button>
+                </div>
+            `;
+            
+            container.parentNode.insertBefore(editDiv, container.nextSibling);
+            
+            // 綁定取消
+            document.getElementById('cancel-edit-btn').onclick = function() {
+                editDiv.remove();
+            };
+            
+            // 綁定儲存
+            document.getElementById('save-edit-btn').onclick = function() {
+                const newName = document.getElementById('edit-name').value.trim();
+                let newUrl = document.getElementById('edit-url').value.trim();
+                
+                if (!newName || !newUrl) {
+                    alert('請填寫名稱與連結');
+                    return;
+                }
+                
+                // 簡單驗證 PayMe 格式 (非強制)
+                if (!newUrl.startsWith('https://payme.hsbc/')) {
+                    if (!confirm('連結似乎不是 PayMe 官方格式 (https://payme.hsbc/...)，確定繼續？')) {
+                        return;
+                    }
+                }
+                
+                const offers = loadOffers();
+                const target = offers.find(o => o.id === id);
+                if (target) {
+                    target.name = newName;
+                    target.url = newUrl;
+                    saveOffers(offers);
+                }
+                editDiv.remove();
+            };
+        }
+
+        // ------------------- 新增優惠 -------------------
+        function addNewOffer() {
+            // 移除舊編輯表單
+            const existingForm = document.getElementById('edit-form-container');
+            if (existingForm) existingForm.remove();
+            
+            const container = document.getElementById('links-container');
+            const addDiv = document.createElement('div');
+            addDiv.id = 'edit-form-container';
+            addDiv.className = 'edit-section';
+            addDiv.style.marginTop = '20px';
+            
+            addDiv.innerHTML = `
+                <h4>➕ 新增優惠</h4>
+                <div class="form-group">
+                    <label>優惠名稱</label>
+                    <input type="text" id="new-name" placeholder="例如: 超市禮券 $100">
+                </div>
+                <div class="form-group">
+                    <label>PayMe 連結</label>
+                    <input type="url" id="new-url" placeholder="https://payme.hsbc/m/...">
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button id="cancel-add-btn" class="edit-btn" style="background: #6c757d;">取消</button>
+                    <button id="save-add-btn" class="save-btn">新增優惠</button>
+                </div>
+            `;
+            
+            container.parentNode.insertBefore(addDiv, container.nextSibling);
+            
+            document.getElementById('cancel-add-btn').onclick = function() {
+                addDiv.remove();
+            };
+            
+            document.getElementById('save-add-btn').onclick = function() {
+                const newName = document.getElementById('new-name').value.trim();
+                let newUrl = document.getElementById('new-url').value.trim();
+                
+                if (!newName || !newUrl) {
+                    alert('請填寫名稱與連結');
+                    return;
+                }
+                
+                // 簡單驗證
+                if (!newUrl.startsWith('https://payme.hsbc/')) {
+                    if (!confirm('連結似乎不是 PayMe 官方格式 (https://payme.hsbc/...)，確定繼續？')) {
+                        return;
+                    }
+                }
+                
+                const offers = loadOffers();
+                const newId = Date.now() + '-' + Math.random().toString(36).substring(2);
+                offers.push({
+                    id: newId,
+                    name: newName,
+                    url: newUrl
+                });
+                saveOffers(offers);
+                addDiv.remove();
+            };
+        }
+
+        // ------------------- 開啟 PayMe (加 Token) -------------------
         async function openPayMe(button) {
             if (button.disabled) return;
             
             button.disabled = true;
             button.classList.add('loading-btn');
             const originalText = '領取';
+            button.textContent = '處理中';
             
             try {
-                // 獲取 Token (真實或模擬)
                 const result = await fetchToken();
-                
-                if (!result.success) {
-                    throw new Error('無法獲取 Token');
-                }
-                
-                console.log('使用 token:', result.token, result.isMock ? '(模擬)' : '(真實)');
-                
-                // 組合完整 URL
                 const baseUrl = button.dataset.baseUrl;
+                
+                if (!baseUrl) throw new Error('無連結');
+                
                 const separator = baseUrl.includes('?') ? '&' : '?';
                 const fullUrl = `${baseUrl}${separator}token=${encodeURIComponent(result.token)}`;
                 
-                // 開啟 PayMe
                 window.open(fullUrl, '_blank');
                 
-                // 按鈕回饋
                 button.textContent = '已開啟';
                 setTimeout(() => {
                     button.textContent = originalText;
                     button.disabled = false;
                     button.classList.remove('loading-btn');
-                }, 2000);
+                }, 1500);
                 
             } catch (error) {
-                console.error('錯誤:', error);
-                
-                // 即使失敗，仍然提供直接開啟 (唔加 token)
+                console.error(error);
                 if (confirm('無法取得 Token，是否直接開啟連結？')) {
                     window.open(button.dataset.baseUrl, '_blank');
                 }
-                
-                button.textContent = '重試';
+                button.textContent = '領取';
                 button.disabled = false;
                 button.classList.remove('loading-btn');
             }
         }
 
-        // 檢查 CORS (只作提示)
+        // ------------------- 獲取 Token (CORS 降級) -------------------
+        async function fetchToken() {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3000);
+                
+                const response = await fetch(HSBC_API_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Apikey': HSBC_API_KEY,
+                    },
+                    signal: controller.signal
+                }).catch(() => { throw new Error('CORS blocked'); });
+
+                clearTimeout(timeoutId);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                let token = await response.text();
+                token = token.trim().replace(/^"|"$/g, '');
+                return { token, isMock: false };
+                
+            } catch (error) {
+                console.warn('使用模擬 Token (CORS 阻擋)');
+                document.getElementById('cors-warning').style.display = 'block';
+                return { token: MOCK_TOKEN, isMock: true };
+            }
+        }
+
+        // ------------------- 檢查CORS提示 -------------------
         async function checkCORS() {
             try {
-                await fetch(HSBC_API_URL, { 
-                    method: 'HEAD',
-                    mode: 'no-cors'  // 這不會回傳狀態，但至少唔會 error
-                });
-                // 如果真係得，就隱藏 warning (但 no-cors 幾乎唔會成功)
+                await fetch(HSBC_API_URL, { method: 'HEAD', mode: 'no-cors' });
             } catch (e) {
                 document.getElementById('cors-warning').style.display = 'block';
             }
         }
 
-        // 安全轉義
+        // ------------------- 輔助函數 -------------------
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // 啟動
-        initPage();
-    </script>
+        // ------------------- 初始化 -------------------
+        function initPage() {
+            document.getElementById('user-name').textContent = '自訂模式';
+            
+            // 初始化儲存
+            if (!localStorage.getItem(STORAGE_KEY)) {
+                saveOffers(DEFAULT_OFFERS);
+            } else {
+                renderOffers();
+            }
+            
+            // 綁定新增按鈕
+            document.getElementById('addNewOfferBtn').onclick = addNewOffer;
+            
+            checkCORS();
+        }
 
+        window.onload = initPage;
+    </script>
 
 <veepn-lock-screen><style>@font-face{font-family:FigtreeVF;src:url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2 supports variations"),url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2-variations");font-weight:100 1000;font-display:swap}</style></veepn-lock-screen></body></html>
